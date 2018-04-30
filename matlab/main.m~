@@ -60,15 +60,9 @@ for k = 1:unique_index_size
 end
 
 [sorted_rank, index] = sort(rank_L_count);
-k = unique_index_size;
-while rank_L_sum(index(k)) / rank_L_count(index(k)) > rank_H
-    k = k - 1;
+i = unique_index_size;
+while rank_L_sum(index(i)) / rank_L_count(index(i)) > rank_H
+    i = i - 1;
 end
 
-denominator_image = src_images(:, :, index(k));
-% imshow(uint8(denominator_image));
 
-%% Local normal estimation by ratio images
-for k = 1:unique_index_size
-    src_images(:, :, k) = src_images(:, :, k)./denominator_image;
-end
