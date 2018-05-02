@@ -1,7 +1,7 @@
 %%% 4.3 select denominator image
 %%% @output: denominator_image, (m, n)
 %%% @output: denominator_light, (3, 1)
-function [denominator_image, denominator_light] = select_denominator_image(rank_L, rank_H, m, n, src_images, unique_light_vec)
+function [denominator_image, denominator_light, denominator_index] = select_denominator_image(rank_L, rank_H, m, n, src_images, unique_light_vec)
 unique_index_size = length(unique_light_vec);
 rank_L = rank_L * unique_index_size;
 rank_H = rank_H * unique_index_size;
@@ -28,7 +28,7 @@ for k = 1:unique_index_size
     end
 end
 
-[sorted_rank, index] = sort(rank_L_count);
+[~, index] = sort(rank_L_count);
 k = unique_index_size;
 while rank_L_sum(index(k)) / rank_L_count(index(k)) > rank_H
     k = k - 1;
@@ -36,6 +36,7 @@ end
 
 denominator_image = src_images(:, :, index(k));
 denominator_light = unique_light_vec(index(k), :);
+denominator_index = index(k);
 % imshow(uint8(denominator_image));
 
 end
