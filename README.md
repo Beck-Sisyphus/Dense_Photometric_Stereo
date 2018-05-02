@@ -12,16 +12,19 @@ Main reference code is from Mao Hongzi's work *https://github.com/hongzimao/shap
 # Code explains
 We follows the steps in the paper. First, to construct a simple system, we use only linear regression to generate the normal image. After all the parts are tested, we move on the graph cut based combination optimization to get shaper edges.
 
-## Resampling the light vector
+## The simple system
+### Resampling the light vector
+The ```icosahedron_cosntruction.m``` and ```subdivide.m``` handle the generation of the creation of a subdivided half icosahedron to uniformly resample the light vector. And ```resampling_light_vector.m``` find the one light vectors closest to the resample base. 
+<img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/icosahedron.jpg">
+
+### Load the images with only the unique light vector
 
 
-## Load the images with only the unique light vector
+### Select the denominator image
+ by image intensity ranking
 
+### Local normal estimation 
+by ratio images
 
-## Select the denominator image by image intensity ranking
-
-
-## Local normal estimation by ratio images
-
-
-## plot the normal image using shape from shapelet reconstruction
+## Plot the normal image using shape from shapelet reconstruction
+Select the scale for each image. Then create the slant and tilt, the toolbox handles for us. Notice that the final image will rotate by 90
