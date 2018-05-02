@@ -16,7 +16,7 @@ We follows the steps in the paper. First, to construct a simple system, we use o
 ### Resampling the light vector
 The ```icosahedron_cosntruction.m``` and ```subdivide.m``` handle the generation of the creation of a subdivided half icosahedron to uniformly resample the light vector. And ```resampling_light_vector.m``` find the one light vectors closest to the resample base. To create a icosahedron, we follow the instruction in the ```/reference/uniform_sampling.jpg``` to get each vertices and midpoints from the gloden ratio. To subdivide the icosahedron, a simple method to divide the edge evenly and create a triangle is used. To find the closest light vector, we sorted the light vectors by its distance to the resulted vertices and select the top.
 
-<img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/icosahedron.jpg" width="888" height="628">
+<img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/icosahedron.jpg" width="666" height="471">
 
 ### Load the images with only the unique light vector
 After the light vectors are selected, since the light vector and the data are indexed in the same order, we only read the image indexes the same as the light vectors. 
@@ -33,7 +33,14 @@ The local normal estimation from the ratio images to remove the unknown light am
 Select the scale for each image. Then create the slant and tilt, the toolbox handles for us. Notice that the final image will rotate by 90
 
 # results
-The images could be found in ```/results```
+## teapot
+normal image
+<img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/data08_simple_normal.jpg" width="404" height="332">
+
+simple system
+<img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/data08_shape_scale_6.jpg" width="560" height="420">
+
+More images could be found in ```/results```
 
 
 ```matlab
