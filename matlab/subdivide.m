@@ -1,4 +1,5 @@
-% divide the triangle evenly at each edge
+% 4.2.2 helper function
+% to divide the triangle evenly at each edge in an icosahedron
 function result = subdivide(p1, p2, p3, q)
     result = [];
     for i = q: q: 1

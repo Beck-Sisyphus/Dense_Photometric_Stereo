@@ -1,3 +1,9 @@
+%%% 4.2 uniform resamplings
+%%% Resampling the light vector with a divided icosahedron
+%%% @input: light vectors
+%%% @input: icosahedron divided ratio, larger the more images
+%%% @output: resampled unique light vectors, (k, 3)
+%%% @output: unique index matching the light vector, (k, 1)
 function [unique_light_vec, unique_index] = resampling_light_vector(icosahedron_divide_ratio, light_vec)
 icosa_ver = icosahedron_construction(1 / icosahedron_divide_ratio);
 icosa_size = size(icosa_ver, 1);
