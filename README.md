@@ -19,13 +19,33 @@ The ```icosahedron_cosntruction.m``` and ```subdivide.m``` handle the generation
 <img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/icosahedron.jpg" width="888" height="628">
 
 ### Load the images with only the unique light vector
-After 
+After the light vectors are selected, since the light vector and the data are indexed in the same order, we only read the image indexes the same as the light vectors. 
 
 ### Select the denominator image
- by image intensity ranking
+The denominator image is selected by image intensity ranking. The ideal denominator image is free from shadows and highlight. Using only the gray scale image, the pixel intensity is defined by its pixel value. At each pixel, we sorted through all images and recreate a set of pixel rank images. Then the image is selected by two categories: 
+1. To remove shallows, the image should have the maximum number of pixels with each pixel ranking higher than 70th percentiles;
+2. To remove highlights, the mean rank amount the image should be lower than 90th percentiles.
 
 ### Local normal estimation 
-by ratio images
+The local normal estimation from the ratio images to remove the unknown light amount. For each pixel, k-1 set of equations are formed. The normal is estimated by linear regression, by minimizing the l2 norm of x * A * A' * x'. Using the singular-value decomposition, and get the eigen vector regarding to the smallest eigen value, we have the normal vector.
 
 ## Plot the normal image using shape from shapelet reconstruction
 Select the scale for each image. Then create the slant and tilt, the toolbox handles for us. Notice that the final image will rotate by 90
+
+# results
+The images could be found in ```/results```
+
+
+```matlab
+% dataset   scale   samples denominator_index   time
+% data02        2       220     206     1.745762
+% data03        4       344     298     5.750543 
+% data04        4       354     354     6.741049
+% data05        4       334     326     8.101798
+% data06        4       348     348     9.162170
+% data07        6       365     351     8.628281 
+% data08        6       359     346     9.654362
+% data09        6       365     299     11.449866
+% data10        4       373     373     12.705782
+
+```
