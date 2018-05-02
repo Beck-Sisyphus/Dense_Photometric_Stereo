@@ -15,10 +15,11 @@ We follows the steps in the paper. First, to construct a simple system, we use o
 ## The simple system
 ### Resampling the light vector
 The ```icosahedron_cosntruction.m``` and ```subdivide.m``` handle the generation of the creation of a subdivided half icosahedron to uniformly resample the light vector. And ```resampling_light_vector.m``` find the one light vectors closest to the resample base. To create a icosahedron, we follow the instruction in the ```/reference/uniform_sampling.jpg``` to get each vertices and midpoints from the gloden ratio. To subdivide the icosahedron, a simple method to divide the edge evenly and create a triangle is used. To find the closest light vector, we sorted the light vectors by its distance to the resulted vertices and select the top.
-<img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/icosahedron.jpg" width="444" height="314">
+
+<img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/icosahedron.jpg" width="888" height="628">
 
 ### Load the images with only the unique light vector
-
+After 
 
 ### Select the denominator image
  by image intensity ranking
