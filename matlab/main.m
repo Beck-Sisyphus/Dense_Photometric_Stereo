@@ -1,7 +1,8 @@
 % 20180430 Beck Pang
 % Initialize the shape from shaping
 clc; clear;
-src_path = '../../data/data10/';
+src_path = '../../data/data08/';
+addpath('./gco/matlab');
 icosahedron_divide_ratio = 5;
 rank_L = 0.7;
 rank_H = 0.9;
@@ -13,7 +14,7 @@ light_vec_src = textscan(light_vec_path, '%f %f %f');
 light_vec = [light_vec_src{1} light_vec_src{2} light_vec_src{3}];
 
 %%% 4.2 Resampling the light vector
-[unique_light_vec, unique_index] = resampling_light_vector(icosahedron_divide_ratio, light_vec);
+[unique_icosa_ver, unique_light_vec, unique_index] = resampling_light_vector(icosahedron_divide_ratio, light_vec);
 
 %%% Load the images with only the unique light vector
 [src_images, m, n] = load_images_with_unique_light_vector(src_path, unique_index);
@@ -25,7 +26,86 @@ light_vec = [light_vec_src{1} light_vec_src{2} light_vec_src{3}];
 %%% 4.4 Local normal estimation by ratio images
 normal_est_image = local_normal_estimation(m, n, src_images, denominator_image, unique_light_vec, denominator_light);
 
-imshow( -1/sqrt(3) * normal_est_image(:,:,1) + 1/sqrt(3) * normal_est_image(:,:,2) + 1/sqrt(3) * normal_est_image(:,:,3) / 1.1);
+% imshow( -1/sqrt(3) * normal_est_image(:,:,1) + 1/sqrt(3) * normal_est_image(:,:,2) + 1/sqrt(3) * normal_est_image(:,:,3) / 1.1);
+
+%% Graph cut method
+lambda = 0.5;
+sigma  = 0.5;
+
+tic;
+
+ico_vertice = icosahedron_construction(1 / icosahedron_divide_ratio);
+[image_width,image_length,~] = size(normal_est_image);
+ico_size = size(ico_vertice);
+
+normal_label = zeros(m, n);
+for i = 1:m
+    for j = 1:n
+        d = (ico_vertice(:, 1) - normal_est_image(i, j, 1)).^2 + ...
+            (ico_vertice(:, 2) - normal_est_image(i, j, 2)).^2 + ...
+            (ico_vertice(:, 3) - normal_est_image(i, j, 3)).^2;
+        [~, index] = min(d);
+        normal_label(i, j) = index;
+    end
+end
+label = reshape(normal_label, 1, [])';
+
+normal_vec_flat = zeros(m * n, 3);
+for p = 1:3
+    normal_vec_flat(:, p) = reshape( normal_est_image(:, :, p), [m * n, 1]);
+end
+
+h = GCO_Create(m * n, ico_size); % (NumSites, NumLabels)
+GCO_SetLabeling(h, label);
+
+data_cost = int32( pdist2( ico_vertice, normal_vec_flat ));
+GCO_SetDataCost(h, data_cost);
+
+smooth_cost = pdist2( ico_vertice, ico_vertice);
+smooth_cost = int32 ( lambda * log10 ( 1 + smooth_cost / (2*sigma*sigma)));
+GCO_SetSmoothCost(h, smooth_cost);
+
+si = zeros( (m - 1) * n + (n - 1) * m, 1);
+for i = 1:n
+    for j = 1:m-1
+        si(j + (i-1) * (m-1)) = j + (i-1) * m;
+    end
+end
+for i = 1:n-1
+    for j = 1:m
+        si((m-1) * n + (i-1) * m + j) = j + (i-1)*m;
+    end
+end
+
+sj = zeros((m-1) * n + (n-1) * m, 1);
+sv = ones ((m-1) * n + (n-1) * m, 1);
+
+for i = 1:n
+    for j = 1:m-1
+        sj(j + (i-1) * (m-1)) = j+1 + (i-1) * m;
+    end
+end
+
+for i = 1:n-1
+    for j = 1:m
+        sj( (m-1) * n + (i-1) * m + j) = j + i * m;
+    end
+end
+
+S = sparse(si, sj, sv, n * m, n * m);
+GCO_SetNeighbors(h, S);
+GCO_Expansion(h);
+labeling = GCO_GetLabeling(h);
+GCO_Delete(h);
+
+refined_normal = zeros(m, n, 3);
+for i = 1:m
+    for j = 1:n
+        refined_normal(i, j, :) = ico_vertice( labeling( (j-1)*m + i), :);
+    end
+end
+
+toc;
 
 %% shape from shapelets
 scale = 4;
@@ -34,7 +114,8 @@ tilt  = zeros(m, n);
 
 for i = 1:m
     for j = 1:n
-        T = normal_est_image(m + 1 - i, j, :);
+%         T = normal_est_image(m + 1 - i, j, :);
+        T = refined_normal(m + 1 - i, j, :);
         x = T(1);
         y = T(2);
         z = T(3);

@@ -2,9 +2,10 @@
 %%% Resampling the light vector with a divided icosahedron
 %%% @input: light vectors
 %%% @input: icosahedron divided ratio, larger the more images
+%%% @output: resampled unique icosahedron vectors, (k, 3)
 %%% @output: resampled unique light vectors, (k, 3)
 %%% @output: unique index matching the light vector, (k, 1)
-function [unique_light_vec, unique_index] = resampling_light_vector(icosahedron_divide_ratio, light_vec)
+function [unique_icosa_ver, unique_light_vec, unique_index] = resampling_light_vector(icosahedron_divide_ratio, light_vec)
 icosa_ver = icosahedron_construction(1 / icosahedron_divide_ratio);
 icosa_size = size(icosa_ver, 1);
 % resampled_ver = zeros(icosa_size, 3);
@@ -28,7 +29,9 @@ end
 unique_index = unique(resampled_index);
 unique_index_size = length(unique_index);
 unique_light_vec  = zeros(unique_index_size, 3);
+unique_icosa_ver  = zeros(unique_index_size, 3);
 for i = 1:unique_index_size
+    unique_icosa_ver(i, :) = icosa_ver(i, :);
     unique_light_vec(i, :) = [light_x(unique_index(i)) light_y(unique_index(i)) light_z(unique_index(i))];
 end
 end
