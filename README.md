@@ -29,6 +29,9 @@ The denominator image is selected by image intensity ranking. The ideal denomina
 ### Local normal estimation 
 The local normal estimation from the ratio images to remove the unknown light amount. For each pixel, k-1 set of equations are formed. The normal is estimated by linear regression, by minimizing the l2 norm of x * A * A' * x'. Using the singular-value decomposition, and get the eigen vector regarding to the smallest eigen value, we have the normal vector.
 
+## Refined system
+Using graph cut.
+
 ## Plot the normal image using shape from shapelet reconstruction
 Select the scale for each image. Then create the slant and tilt, the toolbox handles for us. Notice that the final image will rotate by 90
 
@@ -39,6 +42,9 @@ normal image
 
 simple system
 <img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/data08_shape_scale_6.jpg" width="560" height="420">
+
+refined system
+<img src="https://github.com/Beck-Sisyphus/Dense_Photometric_Stereo/blob/master/results/data08_refined.jpg" width="560" height="420">
 
 More images could be found in ```/results```
 
